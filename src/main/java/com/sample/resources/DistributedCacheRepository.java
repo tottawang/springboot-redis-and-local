@@ -11,8 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.sample.domain.User;
 
 @Repository
-@CacheConfig(cacheManager = "cacheManager", cacheNames = "users",
-    keyGenerator = "usersKeyGenerator")
+@CacheConfig(cacheNames = "users", keyGenerator = "usersKeyGenerator")
 public class DistributedCacheRepository {
 
   @Cacheable
