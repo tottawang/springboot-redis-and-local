@@ -10,6 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 
+/**
+ * Not functional yet
+ *
+ */
 @Configuration
 @ConditionalOnProperty(name = "SPRING_CACHE_TYPE", havingValue = "redis")
 public class DistributedCacheCustomizer {
