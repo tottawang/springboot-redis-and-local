@@ -3,6 +3,7 @@ package com.sample.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Repository;
 import com.sample.domain.User;
 
 @Repository
-public class SampleRepository {
+@CacheConfig(cacheManager = "cacheManager", cacheNames = "users",
+    keyGenerator = "usersKeyGenerator")
+public class DistributedCacheRepository {
 
-  @Cacheable(value = "users", keyGenerator = "usersKeyGenerator")
+  @Cacheable
   public List<User> getUsers() {
     System.out.println("getUsers gets called");
     List<User> users = new ArrayList<>();
@@ -21,22 +24,7 @@ public class SampleRepository {
     return users;
   }
 
-  /**
-   * Verify query for empty results can be cached as well
-   * 
-   * @return
-   */
-  @Cacheable(value = "emptyUsers")
-  public List<User> getEmptyUsers() {
-    System.out.println("getEmptyUsers gets called");
-    List<User> users = new ArrayList<>();
-    return users;
-  }
-
-  @CacheEvict(value = "users")
+  @CacheEvict
   public void evict() {}
-
-  @CacheEvict(value = "emptyUsers")
-  public void evictEmptyUsers() {}
 
 }

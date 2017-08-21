@@ -1,61 +1,45 @@
 package com.sample.resources;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 
 @Path("/api")
 @Produces("text/plain")
 public class SampleResource {
 
   @Autowired
-  private SampleRepository sampleRepository;
+  private LocalCacheRepository localCacheRepository;
 
-  @Autowired(required = false)
-  private RedisTemplate<Object, Object> redisTemplate;
-
-  @Autowired(required = false)
-  private RedisCacheManager redisCacheManager;
+  @Autowired
+  private DistributedCacheRepository remoteCacheRepository;
 
   @GET
-  @Path("/get-users")
-  public String getUsers() {
-    return sampleRepository.getUsers().toString();
+  @Path("/dcache/users")
+  public String getDistributedCacheUsers() {
+    return remoteCacheRepository.getUsers().toString();
   }
 
   @GET
-  @Path("/get-empty-users")
+  @Path("/dcache/evict")
   @Produces("text/plain")
-  public String getEmptyUsers() {
-    return sampleRepository.getEmptyUsers().toString();
-  }
-
-  @POST
-  @Path("/evict")
-  public void clearCache() {
-    sampleRepository.evict();
-    sampleRepository.evictEmptyUsers();
+  public void evictDistributedCacheUsers() {
+    remoteCacheRepository.evict();
   }
 
   @GET
-  @Path("/caches/{cacheKey}")
-  public String getCache(@PathParam("cacheKey") String cacheKey) {
-    ValueOperations<Object, Object> valueOperations = redisTemplate.opsForValue();
-    return valueOperations.get(cacheKey).toString();
+  @Path("/lcache/users")
+  @Produces("text/plain")
+  public String getLocalCacheUsers() {
+    return localCacheRepository.getEmptyUsers().toString();
   }
 
   @GET
-  @Path("/init-caches")
-  public String testInitCaches() {
-    redisCacheManager.initializeCaches();
-    return "";
+  @Path("/lcache/evict")
+  @Produces("text/plain")
+  public void evictLocalCacheUsers() {
+    localCacheRepository.evictEmptyUsers();
   }
-
 }

@@ -1,5 +1,7 @@
 # springboot-redis
-Create a springboot sample application using Redis
+Create a springboot sample application using two level caches
+local: caffeine
+distributed: redis
 
 ### Run and build
 Step-1 : 
